@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -17,6 +18,12 @@ Route::get('api/getCSRF', function(){
     return response()->json([
         "token"=> csrf_token()
     ]);
+});
+
+Route::controller(UserController::class)->group(function(){
+    Route::get('api/users', 'index');
+    Route::post('api/user/create', 'store');
+    Route::delete('api/user/delete/{user}', 'destroy');
 });
 
 //Rutas para peticiones referentes a la tabla Role
