@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUser;
+use App\Models\Role;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Log\Logger;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -92,5 +96,95 @@ class UserController extends Controller
                 "message"=>$ex->getMessage()
             ]);
         }
+    }
+
+    //Obtiene los roles disponibles para un usuario
+    function rolesAvailablesForUser(User $user){
+        try {
+            $id = $user->id;
+            $roles = Role::whereDoesntHave('users', function($query) use ($id){
+                $query->where('user_id', $id);
+            })->get();
+
+            return response()->json($roles);
+        } catch (Exception $ex) {
+            return response()->json([
+                "status"=>'error',
+                "message"=>$ex->getMessage()
+            ]);
+        }
+    }
+
+    //Asigna un rol a un usuario recibido por una petición post
+    function addRoleToUser(User $user, Request $request){
+        try {
+            $user->roles()->attach($request->role);
+            return response()->json([
+                "status"=>'ok',
+                "message"=>'Se ha asignado el rol exitosamente' 
+            ]);
+        } catch (Exception $ex) {
+            return response()->json([
+                "status"=>'error',
+                "message"=>$ex->getMessage()
+            ]);
+        }
+    }
+
+    function deleteRoleFromUser(User $user, Role $role){
+        try {
+            $user->roles()->detach($role->id);
+            return response()->json([
+                "status"=>'ok',
+                "message"=>'Se ha quitado el rol ' . $role->name . ' exitosamente'
+            ]);
+        } catch (Exception $ex) {
+            return response()->json([
+                "status"=>'error',
+                "message"=>$ex->getMessage()
+            ]);
+        }
+    }
+
+    function login(Request $request){
+        //Validar datos entrantes y asignarlos a otro arreglo con esos valores
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required']
+        ]);
+
+        //Intenta logear al usuario
+        if (Auth::attempt($credentials)) {
+            //Regenera la sesión
+            $request->session()->regenerate();
+            
+            //Obtener el usuario que se ha logeado;
+            $user = User::find(Auth::user()->id);
+
+            //Cargar datos extras al usuario logeado
+            $user->load('roles');
+
+            //Retornar el usuario logeado al front.
+            return response()->json($user);
+        }
+
+        //Retorna una respuesta para el front en caso de error
+        return response()->json([
+            "status"=>"error",
+            "message"=>'La contraseña o email son incorrectos, intenta de nuevo'
+        ]);
+    }
+
+    function logout(Request $request){
+        Auth::logout();
+ 
+        $request->session()->invalidate();
+     
+        $request->session()->regenerateToken();
+
+        return response()->json([
+            "status"=>'ok',
+            "message"=>'Se ha cerrado la sesión'
+        ]);
     }
 }

@@ -22,8 +22,13 @@ Route::get('api/getCSRF', function(){
 
 Route::controller(UserController::class)->group(function(){
     Route::get('api/users', 'index');
+    Route::get('api/{user}/roles', 'rolesAvailablesForUser');
     Route::post('api/user/create', 'store');
     Route::delete('api/user/delete/{user}', 'destroy');
+    Route::post('api/user/{user}/addRole', 'addRoleToUser');
+    Route::delete('api/user/deleteRole/{user}/{role}', 'deleteRoleFromUser');
+    Route::post('api/user/login', 'login'); //Ruta para manejar el intento de logeo de un usuario
+    Route::delete('api/user/logout', 'logout'); //Ruta para deslogear a un usuario
 });
 
 //Rutas para peticiones referentes a la tabla Role
