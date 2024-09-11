@@ -162,7 +162,7 @@ class UserController extends Controller
             $user = User::find(Auth::user()->id);
 
             //Cargar datos extras al usuario logeado
-            $user->load('roles');
+            $user->load('roles.permissions', 'profile');
 
             //Retornar el usuario logeado al front.
             return response()->json($user);
