@@ -13,7 +13,7 @@ Route::get('/', function () {
 
 Route::get('/{any}', function () {
     return view('index');
-})->where('any', '^(?!api).*$');
+})->where('any', '^(?!api|profile_photos).*$');
 
 Route::get('api/getCSRF', function(){
     return response()->json([
@@ -23,6 +23,7 @@ Route::get('api/getCSRF', function(){
 
 Route::controller(UserController::class)->group(function(){
     Route::get('api/users', 'index');
+    Route::get('api/user/{user}', 'show');
     Route::get('api/{user}/roles', 'rolesAvailablesForUser');
     Route::post('api/user/create', 'store');
     Route::delete('api/user/delete/{user}', 'destroy');
@@ -34,6 +35,7 @@ Route::controller(UserController::class)->group(function(){
 
 Route::controller(ProfileController::class)->group(function(){
     Route::post('api/profile/create', 'create');
+    Route::put('api/profile/{profile}/modify', 'update');
 });
 
 //Rutas para peticiones referentes a la tabla Role
