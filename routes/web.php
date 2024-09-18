@@ -7,6 +7,8 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
+//Al lanzar a producción el proyecto de Angular, añadir el middleware('auth') a las rutas.
+
 Route::get('/', function () {
     return view('index');
 });
