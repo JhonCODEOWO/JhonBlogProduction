@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
@@ -12,7 +14,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::with('roles')->get();
+        $categories = Category::with('user')->get();
         return response()->json($categories);
     }
 
@@ -29,7 +31,20 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            Log::info($request->all());
+            $category = Category::create($request->all());
+
+            return response()->json([
+                "status" => 'ok',
+                "message"=>'Categoría generada correctamente.'
+            ]);
+        } catch (Exception $ex) {
+            return response()->json([
+                "status" => 'ok',
+                "message"=>$ex->getMessage()
+            ]);
+        }
     }
 
     /**

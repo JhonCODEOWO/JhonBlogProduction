@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 //Al lanzar a producción el proyecto de Angular, añadir el middleware('auth') a las rutas.
+//Al lanzar a producción se debe colocar el middleware('permission:<nombre del permiso>') para prohibier peticiones a rutas específicas en base a los permisos de un usuario.
 
 Route::get('/', function () {
     return view('index');
@@ -51,7 +52,8 @@ Route::controller(RoleController::class)->group(function(){
 
 //Rutas agrupadas para el controlador de las categorías.
 Route::controller(CategoryController::class)->group(function(){
-    Route::get('api/categories', 'index');
+    Route::get('api/category/index', 'index');
+    Route::post('api/category/create', 'store');
 });
 
 //Rutas para peticiones referentes a la tabla permission

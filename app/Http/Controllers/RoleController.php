@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Log\Logger;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class RoleController extends Controller
@@ -99,7 +101,6 @@ class RoleController extends Controller
     {
         try {
             $role->delete();
-            
             return response()->json([
                 "status" => 'ok',
                 "message"=> "El rol se ha eliminado correctamente"
