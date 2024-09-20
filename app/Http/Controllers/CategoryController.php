@@ -41,7 +41,7 @@ class CategoryController extends Controller
             ]);
         } catch (Exception $ex) {
             return response()->json([
-                "status" => 'ok',
+                "status" => 'error',
                 "message"=>$ex->getMessage()
             ]);
         }
@@ -66,16 +66,38 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Category $category, Request $request)
     {
-        //
+        try {
+            $category->update($request->all());
+            return response()->json([
+                "status" => 'ok',
+                "message"=>'Categoría modificada correctamente'
+            ]);
+        } catch (Exception $ex) {
+            return response()->json([
+                "status" => 'error',
+                "message"=>$ex->getMessage()
+            ]);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Category $category)
     {
-        //
+        try {
+            $category->delete();
+            return response()->json([
+                "status" => 'ok',
+                "message"=>'Categoría eliminada correctamente'
+            ]);
+        } catch (Exception $ex) {
+            return response()->json([
+                "status" => 'error',
+                "message"=>$ex->getMessage()
+            ]);
+        }
     }
 }

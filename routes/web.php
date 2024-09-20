@@ -54,6 +54,8 @@ Route::controller(RoleController::class)->group(function(){
 Route::controller(CategoryController::class)->group(function(){
     Route::get('api/category/index', 'index');
     Route::post('api/category/create', 'store');
+    Route::put('api/category/{category}/update', 'update');
+    Route::delete('api/category/delete/{category}', 'destroy');
 });
 
 //Rutas para peticiones referentes a la tabla permission
